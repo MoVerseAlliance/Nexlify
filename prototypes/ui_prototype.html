@@ -1,22 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Nexlify UI 原型 - 下一代创作放大器</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 50px;
+            background: linear-gradient(90deg, #2a2a2a, #1a1a1a);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+            border-bottom: 1px solid #ff8c00;
+        }
+        .menu {
+            position: relative;
+        }
+        .menu-btn {
+            padding: 6px 14px;
+            background: #ff8c00;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .menu-btn:hover {
+            background: #ffa040;
+        }
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 0;
+            background: #2c2c2c;
+            border-radius: 4px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+            z-index: 10;
+            min-width: 150px;
+        }
+        .dropdown div {
+            padding: 10px 15px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .dropdown div:hover {
+            background: #ff8c00;
+        }
+        .menu:hover .dropdown {
+            display: block;
+        }
+        .status-bar span {
+            font-size: 14px;
+        }
+        .main-container {
+            display: flex;
+            height: calc(100vh - 100px);
+        }
+        .sidebar {
+            width: 120px;
+            background: #222222;
+            padding: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 1px solid #333;
+        }
+        .sidebar .tool {
+            width: 90px;
+            height: 90px;
+            background: #2c2c2c;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+        .sidebar .tool:hover {
+            background: #ff8c00;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(255,140,0,0.4);
+        }
+        .sidebar .tool span {
+            font-size: 14px;
+            text-align: center;
+        }
+        .workspace {
+            flex: 1;
+            background: #1e1e1e;
+            padding: 20px;
+            overflow: auto;
+        }
+        .workspace .panel {
+            background: #262626;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+        }
+        .workflow-bar {
+            height: 50px;
+            background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -3px 8px rgba(0,0,0,0.5);
+        }
+        .workflow-tab {
+            width: 180px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2c2c2c;
+            margin: 0 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            border-radius: 8px 8px 0 0;
+        }
+        .workflow-tab:hover, .workflow-tab.active {
+            background: linear-gradient(135deg, #ff8c00, #ffb300);
+            transform: translateY(-3px);
+            box-shadow: 0 0 12px rgba(255,140,0,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="menu">
+            <button class="menu-btn">菜单</button>
+            <div class="dropdown">
+                <div onclick="alert('保存功能待实现')">保存</div>
+                <div onclick="alert('撤销功能待实现')">撤销</div>
+                <div onclick="alert('偏好设置待实现')">偏好设置</div>
+                <div onclick="alert('Nexlify v1.0 - 下一代创作放大器')">关于</div>
+            </div>
+        </div>
+        <div>
+            <span>当前任务: <span id="task">未选择</span></span>
+        </div>
+    </div>
 
-cs/CONTRIBUTING.md`
-```markdown
-# 贡献指南
+    <div class="main-container">
+        <div class="sidebar" id="sidebar">
+            <div class="tool" onclick="loadModule('Blender')"><span>Blender</span></div>
+            <div class="tool" onclick="loadModule('GIMP')"><span>GIMP</span></div>
+        </div>
 
-欢迎加入 Nexlify 的开发！
+        <div class="workspace" id="workspace">
+            <div class="panel">
+                <h2>欢迎使用 Nexlify</h2>
+                <p>下一代创作放大器，融合开源工具与免费 AI，为所有用户提供无缝体验。</p>
+            </div>
+        </div>
+    </div>
 
-## 如何开始
-1. Fork 本仓库。
-2. 创建分支：`git checkout -b feature/your-feature`。
-3. 提交更改：`git commit -m "Add your feature"`。
-4. 推送：`git push origin feature/your-feature`。
-5. 创建 Pull Request。
+    <div class="workflow-bar">
+        <div class="workflow-tab" onclick="switchWorkflow('创作空间')">创作空间</div>
+        <div class="workflow-tab" onclick="switchWorkflow('资源中心')">资源中心</div>
+        <div class="workflow-tab" onclick="switchWorkflow('增强工具')">增强工具</div>
+        <div class="workflow-tab" onclick="switchWorkflow('互动世界')">互动世界</div>
+        <div class="workflow-tab" onclick="switchWorkflow('协作平台')">协作平台</div>
+        <div class="workflow-tab" onclick="switchWorkflow('输出中心')">输出中心</div>
+        <div class="workflow-tab" onclick="switchWorkflow('AI舱')">AI舱</div>
+    </div>
 
-## 建议
-- 添加新模块（如 AI 工具）。
-- 优化 UI（保持深色 + 橙色风格）。
-- 实现具体功能（如 Whisper 集成）。
+    <script>
+        function switchWorkflow(workflow) {
+            const workspace = document.getElementById('workspace');
+            const task = document.getElementById('task');
+            const sidebar = document.getElementById('sidebar');
+            workspace.innerHTML = `
+                <div class="panel">
+                    <h2>${workflow}</h2>
+                    <p>欢迎进入 ${workflow}，开始你的创作之旅。</p>
+                </div>
+            `;
+            task.textContent = workflow;
 
-## 当前任务
-- 完善 AI 舱功能。
-- 添加多语言支持。
+            let tools = '';
+            switch (workflow) {
+                case '创作空间':
+                    tools = `
+                        <div class="tool" onclick="loadModule('Blender')"><span>Blender</span></div>
+                        <div class="tool" onclick="loadModule('GIMP')"><span>GIMP</span></div>
+                        <div class="tool" onclick="loadModule('Kdenlive')"><span>Kdenlive</span></div>
+                        <div class="tool" onclick="loadModule('Krita')"><span>Krita</span></div>
+                        <div class="tool" onclick="loadModule('LibreOffice')"><span>LibreOffice</span></div>
+                    `;
+                    break;
+                case '资源中心':
+                    tools = `
+                        <div class="tool" onclick="loadModule('Files')"><span>Files</span></div>
+                        <div class="tool" onclick="loadModule('VLC')"><span>VLC</span></div>
+                        <div class="tool" onclick="loadModule('Darktable')"><span>Darktable</span></div>
+                    `;
+                    break;
+                case '增强工具':
+                    tools = `
+                        <div class="tool" onclick="loadModule('Natron')"><span>Natron</span></div>
+                        <div class="tool" onclick="loadModule('MantaFlow')"><span>MantaFlow</span></div>
+                        <div class="tool" onclick="loadModule('Inkscape')"><span>Inkscape</span></div>
+                    `;
+                    break;
+                case '互动世界':
+                    tools = `
+                        <div class="tool" onclick="loadModule('Godot')"><span>Godot</span></div>
+                        <div class="tool" onclick="loadModule('Armory3D')"><span>Armory3D</span></div>
+                        <div class="tool" onclick="loadModule('Blender')"><span>Blender</span></div>
+                    `;
+                    break;
+                case '协作平台':
+                    tools = `
+                        <div class="tool" onclick="loadModule('OpenProject')"><span>Projects</span></div>
+                        <div class="tool" onclick="loadModule('Joplin')"><span>Joplin</span></div>
+                    `;
+                    break;
+                case '输出中心':
+                    tools = `
+                        <div class="tool" onclick="loadModule('Blender')"><span>Render</span></div>
+                        <div class="tool" onclick="loadModule('Kdenlive')"><span>Export</span></div>
+                        <div class="tool" onclick="loadModule('7-Zip')"><span>Zip</span></div>
+                    `;
+                    break;
+                case 'AI舱':
+                    tools = `
+                        <div class="tool" onclick="loadModule('gTTS')"><span>文字转语音</span></div>
+                        <div class="tool" onclick="loadModule('Whisper')"><span>语音转文字</span></div>
+                        <div class="tool" onclick="loadModule('DeepSeek')"><span>DeepSeek</span></div>
+                        <div class="tool" onclick="loadModule('Stable Diffusion')"><span>文生图</span></div>
+                        <div class="tool" onclick="loadModule('Grok 3')"><span>Grok 3</span></div>
+                    `;
+                    break;
+            }
+            sidebar.innerHTML = tools;
+
+            document.querySelectorAll('.workflow-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent === workflow) tab.classList.add('active');
+            });
+        }
+
+        function loadModule(module) {
+            const workspace = document.getElementById('workspace');
+            let description = '';
+            switch (module) {
+                case 'Blender': description = '3D 建模与渲染'; break;
+                case 'gTTS': description = 'AI 文字转语音（免费）'; break;
+                case 'Whisper': description = 'AI 语音转文字（免费）'; break;
+                case 'DeepSeek': description = 'AI 文本/代码生成（免费）'; break;
+                case 'Stable Diffusion': description = 'AI 文生图（免费）'; break;
+                case 'Grok 3': description = 'xAI 高性能对话（需订阅）'; break;
+                default: description = '核心功能';
+            }
+            workspace.innerHTML = `
+                <div class="panel">
+                    <h2>${module}</h2>
+                    <p>欢迎使用 ${module}，创作与技术无缝融合。</p>
+                    <p>${description}</p>
+                </div>
+            `;
+            document.getElementById('task').textContent = module;
+        }
+    </script>
+</body>
+</html>
